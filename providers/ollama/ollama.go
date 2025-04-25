@@ -38,7 +38,7 @@ func (p *Provider) Chat(ctx context.Context, req types.APIRequest) (*types.APIRe
 	genReq := &api.ChatRequest{
 		Model:    req.Model,
 		Messages: convertMessages(req.Messages),
-		Stream:   ptrBool(false), // Always provide pointer
+		Stream:   ptrBool(false),
 		Options:  req.OllamaOptions,
 	}
 
