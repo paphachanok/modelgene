@@ -1,4 +1,4 @@
-module github.com/paphachanok/coder-gene-test
+module github.com/paphachanok/modelgene
 
 go 1.24.0
 
