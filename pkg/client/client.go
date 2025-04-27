@@ -1,12 +1,12 @@
 package client
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 
 	"github.com/paphachanok/modelgene/pkg/types"
-	"github.com/paphachanok/modelgene/providers/ollama"
 	"github.com/paphachanok/modelgene/providers/anthropic"
+	"github.com/paphachanok/modelgene/providers/ollama"
 )
 
 type Client struct {
