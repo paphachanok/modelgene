@@ -4,6 +4,11 @@ package types
 type Config struct {
 	OllamaConfig    *OllamaConfig
 	// OpenAIConfig    *OpenAIConfig
-	// AnthropicConfig *AnthropicConfig
+	AnthropicConfig *AnthropicConfig
 	// VertexAIConfig  *VertexAIConfig
+}
+
+// AnthropicConfig
+type AnthropicConfig struct {
+	APIKey string
 }

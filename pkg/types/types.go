@@ -38,8 +38,8 @@ type LogProbInfo struct {
 
 // OllamaConfig is needed by the main client to initialize the Ollama provider.
 type OllamaConfig struct {
-	BaseURL    string       // e.g., "http://localhost:11434"
-	HTTPClient *http.Client // Optional: Provide custom client
+	BaseURL    string
+	HTTPClient *http.Client
 }
 
 // Add other provider config structs here (e.g., OpenAIConfig) if needed.

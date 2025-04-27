@@ -1,12 +1,11 @@
 package client
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/paphachanok/modelgene/pkg/types"
 	"github.com/paphachanok/modelgene/providers/ollama"
-	// TODO: later also add "openai" and "anthropic" imports
+	"github.com/paphachanok/modelgene/providers/anthropic"
 )
 
 type Client struct {
@@ -25,18 +24,15 @@ func NewClient(cfg *types.Config) (*Client, error) {
 		providers[types.ProviderOllama] = ollamaProvider
 	}
 
-	// OpenAI and Anthropic providers here later
+	if cfg.AnthropicConfig != nil {
+		anthropicProvider, err := anthropic.NewProvider(cfg.AnthropicConfig)
+		if err != nil {
+			return nil, fmt.Errorf("failed to init Anthropic provider: %w", err)
+		}
+		providers[types.ProviderAnthropic] = anthropicProvider
+	}
 
 	return &Client{
 		providers: providers,
 	}, nil
-}
-
-// Chat routes the request to the correct provider
-func (c *Client) Chat(ctx context.Context, provider types.Provider, req types.APIRequest) (*types.APIResponse, error) {
-	prov, ok := c.providers[provider]
-	if !ok {
-		return nil, fmt.Errorf("provider %s is not configured", provider)
-	}
-	return prov.Chat(ctx, req)
 }
