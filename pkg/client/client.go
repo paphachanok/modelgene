@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"context"
 
 	"github.com/paphachanok/modelgene/pkg/types"
 	"github.com/paphachanok/modelgene/providers/ollama"
@@ -35,4 +36,12 @@ func NewClient(cfg *types.Config) (*Client, error) {
 	return &Client{
 		providers: providers,
 	}, nil
+}
+
+func (c *Client) Chat(ctx context.Context, provider types.Provider, req types.APIRequest) (*types.APIResponse, error) {
+	prov, ok := c.providers[provider]
+	if !ok {
+		return nil, fmt.Errorf("provider %s is not configured", provider)
+	}
+	return prov.Chat(ctx, req)
 }
