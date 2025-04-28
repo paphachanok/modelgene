@@ -2,7 +2,7 @@ package types
 
 import (
 	"context"
-	"net/http" // Needed for OllamaConfig
+	"net/http"
 )
 
 // Provider enumerates the supported LLM providers.
@@ -41,5 +41,3 @@ type OllamaConfig struct {
 	BaseURL    string
 	HTTPClient *http.Client
 }
-
-// Add other provider config structs here (e.g., OpenAIConfig) if needed.

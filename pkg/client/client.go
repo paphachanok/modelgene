@@ -2,11 +2,11 @@ package client
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/paphachanok/modelgene/pkg/types"
 	"github.com/paphachanok/modelgene/providers/anthropic"
 	"github.com/paphachanok/modelgene/providers/ollama"
+	"github.com/paphachanok/modelgene/pkg/utils"
 )
 
 type Client struct {
@@ -16,11 +16,10 @@ type Client struct {
 // NewClient initializes the modelgene client based on available configs
 func NewClient(cfg *types.Config) (*Client, error) {
 	providers := make(map[types.Provider]types.ProviderClient)
-
 	if cfg.OllamaConfig != nil {
 		ollamaProvider, err := ollama.NewProvider(cfg.OllamaConfig)
 		if err != nil {
-			return nil, fmt.Errorf("failed to init Ollama provider: %w", err)
+			return nil, utils.NewError(types.ProviderOllama, "failed to initialize Ollama provider", err)
 		}
 		providers[types.ProviderOllama] = ollamaProvider
 	}
@@ -28,7 +27,7 @@ func NewClient(cfg *types.Config) (*Client, error) {
 	if cfg.AnthropicConfig != nil {
 		anthropicProvider, err := anthropic.NewProvider(cfg.AnthropicConfig)
 		if err != nil {
-			return nil, fmt.Errorf("failed to init Anthropic provider: %w", err)
+			return nil, utils.NewError(types.ProviderAnthropic, "failed to initialize Anthropic provider", err)
 		}
 		providers[types.ProviderAnthropic] = anthropicProvider
 	}
@@ -41,7 +40,8 @@ func NewClient(cfg *types.Config) (*Client, error) {
 func (c *Client) Chat(ctx context.Context, provider types.Provider, req types.APIRequest) (*types.APIResponse, error) {
 	prov, ok := c.providers[provider]
 	if !ok {
-		return nil, fmt.Errorf("provider %s is not configured", provider)
+		return nil, utils.NewError(provider, "provider is not configured", nil)
 	}
 	return prov.Chat(ctx, req)
 }
+

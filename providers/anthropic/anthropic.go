@@ -2,11 +2,10 @@ package anthropic
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
-	"github.com/paphachanok/modelgene/pkg/types"
 	"github.com/anthropics/anthropic-sdk-go"
+	"github.com/paphachanok/modelgene/pkg/types"
+	"github.com/paphachanok/modelgene/pkg/utils"
 )
 
 // Provider implements types.ProviderClient
@@ -18,7 +17,7 @@ type Provider struct {
 // NewProvider initializes an Anthropic Provider
 func NewProvider(cfg *types.AnthropicConfig) (*Provider, error) {
 	if cfg == nil {
-		return nil, errors.New("anthropic config is nil")
+		return nil, utils.NewError(types.ProviderAnthropic, "anthropic config is nil", nil)
 	}
 	cli := NewAnthropicClient(cfg.APIKey)
 	return &Provider{
@@ -30,7 +29,8 @@ func NewProvider(cfg *types.AnthropicConfig) (*Provider, error) {
 // Chat implements types.ProviderClient
 func (p *Provider) Chat(ctx context.Context, req types.APIRequest) (*types.APIResponse, error) {
 	if req.Model == "" {
-		return nil, errors.New("model name is required")
+		return nil, utils.NewError(types.ProviderAnthropic, "model name is required", nil)
+
 	}
 
 	// Convert types.Message to anthropic.MessageParam
@@ -56,7 +56,7 @@ func (p *Provider) Chat(ctx context.Context, req types.APIRequest) (*types.APIRe
 
 	resp, err := p.client.client.Messages.New(ctx, params)
 	if err != nil {
-		return nil, fmt.Errorf("anthropic chat error: %w", err)
+		return nil, utils.NewError(types.ProviderAnthropic, "anthropic chat error", err)
 	}
 
 	response := &types.APIResponse{
@@ -75,23 +75,4 @@ func (p *Provider) Chat(ctx context.Context, req types.APIRequest) (*types.APIRe
 	}
 
 	return response, nil
-}
-
-// --- Helper functions ---
-
-func getMaxTokens(max *int) int64 {
-	if max != nil {
-		return int64(*max)
-	}
-	return 1024
-}
-
-func mergeContent(blocks []anthropic.ContentBlockUnion) string {
-	var combined string
-	for _, block := range blocks {
-		if block.Text != "" {
-			combined += block.Text
-		}
-	}
-	return combined
 }
